@@ -1,0 +1,46 @@
+import requests
+from urllib.parse import quote_plus
+from django.shortcuts import render
+from bs4 import BeautifulSoup
+from . import models
+import html5lib
+
+# Create your views here.
+BASE_URL = 'https://www.quora.com/search?q={}'
+
+def index(request):
+    return render(request, 'base.html')
+
+
+def new_search(request):
+    search = request.POST.get('search')
+    models.Search.objects.create(search=search)
+    final_url = BASE_URL.format(quote_plus(search))
+    response = requests.get(final_url)
+    data = response.text
+    print(data)
+    soup = BeautifulSoup(data, 'html5lib')
+    posts = []
+    # table = soup.find('div',attrs= {'id': 'mainContent'})
+    for row in soup.find_all('div', attrs={'class': 'CssComponent-sc-1oskqb9-0 cXjXFI'}):
+        post =[]
+        post_name = soup.find_all('span', {'class': 'q-box qu-userSelect--text'})
+        post_title =post_name.text
+        post.append(post_title)
+        posts.append(post)
+
+
+    # post_title = soup.find_all('span', {'class': 'q-box qu-userSelect--text'})
+    # if soup.find_all('span',{'class':'result-title'}):
+    #     price =price = soup.find_all('span',{'class':'result-title'})
+    #     print(price)
+    # else:
+    #     price ='N/A'
+    #
+    # # if soup.find_all()
+    # print(post_title)
+    params = {
+        'search': search,
+    }
+    return render(request, 'myapp/new_Search.html', params)
+

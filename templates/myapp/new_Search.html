@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<p style="text-align:center; font-family: 'Oswald', sans-serif; font-size:4rem;">You searched for: {{  search  }}</p>
+<div class="row"v>
+  {% for post in final_posts%}
+  <div class="col s4 m4">
+          <div class="card">
+            <div class="card-image" >
+              <a href="{{post.1}}"><img src="{{post.3}}" style="height:168.21px;"></a>
+            </div>
+            <div class="card-content" style="height:150px; width:auto; font-family: 'Oswald', sans-serif; font-size:1rem;">
+              <p><span class="card-title" style="text-size:2rem;">{{post.0}}</span></p>
+            </div>
+            <div class="card-action">
+              <a href="{{post.1}}">Price : {{post.2}}</a>
+            </div>
+          </div>
+  </div>
+{% endfor %}
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,38 @@
+import requests
+from urllib.parse import quote_plus
+from django.shortcuts import render
+from bs4 import BeautifulSoup
+from . import models
+
+# Create your views here.
+BASE_URL = 'https://losangeles.craigslist.org/search/?query={}'
+BASE_IMAGE_URL = 'https://images.craigslist.org/{}_300x300.jpg'
+
+
+def index(request):
+    return render(request, 'base.html')
+
+
+def new_search(request):
+    search = request.POST.get('search')
+    models.Search.objects.create(search=search)
+    final_url = BASE_URL.format(quote_plus(search))
+    response = requests.get(final_url)
+    data = response.text
+    soup = BeautifulSoup(data, features='html.parser')
+
+    post_title = soup.find_all('a', attrs={'class': 'result_title'})
+    print(post_title.text
+          )
+    # if soup.find_all('span',{'class':'result-title'}):
+    #     price =price = soup.find_all('span',{'class':'result-title'})
+    #     print(price)
+    # else:
+    #     price ='N/A'
+    #
+    # # if soup.find_all()
+    params = {
+        'search': search,
+    }
+    return render(request, 'myapp/new_Search.html', params)
+
